@@ -65,9 +65,6 @@ public:
     {
         std::lock_guard<std::mutex> lock(joyMutex);
         joyState = tmpJoyState;
-        for(auto& axis : joyState.axes){
-            axis = -axis;
-        }
         return true;
     }
 
