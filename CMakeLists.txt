@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 2.8.12)
 project(choreonoid_ros_samples)
 
-add_compile_options(-std=c++11)
-
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
@@ -11,6 +9,13 @@ find_package(catkin REQUIRED COMPONENTS
   choreonoid
   #choreonoid_rosplugin
   )
+
+if(CHOREONOID_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD ${CHOREONOID_CXX_STANDARD})
+  set(CMAKE_CXX_EXTENSIONS OFF)
+else()
+  add_compile_options(-std=c++11)
+endif()
 
 include_directories(
   ${catkin_INCLUDE_DIRS} 
