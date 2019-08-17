@@ -1,0 +1,3 @@
+install(FILES
+  ROS-Tank.cnoid
+  DESTINATION ${CHOREONOID_SHARE_SUBDIR}/project)

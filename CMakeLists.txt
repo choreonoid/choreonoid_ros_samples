@@ -37,3 +37,5 @@ function(add_cnoid_simple_controller)
 endfunction()
 
 add_subdirectory(src)
+add_subdirectory(project)
+
