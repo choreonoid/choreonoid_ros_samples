@@ -5,6 +5,7 @@
 
 #include <cnoid/SimpleController>
 #include <cnoid/SpotLight>
+#include <cnoid/Joystick>
 #include <ros/node_handle.h>
 #include <sensor_msgs/Joy.h>
 #include <mutex>
@@ -14,8 +15,8 @@ using namespace cnoid;
 
 namespace {
 
-const int axisID[] = { 0, 1, 3, 4 };
-const int buttonID[] = { 0, 2, 3 };
+const int trackAxisID[]  = { Joystick::L_STICK_H_AXIS, Joystick::L_STICK_V_AXIS };
+const int turretAxisID[] = { Joystick::R_STICK_H_AXIS, Joystick::R_STICK_V_AXIS };
 
 }
 
@@ -114,7 +115,7 @@ public:
             
         double pos[2];
         for(int i=0; i < 2; ++i){
-            pos[i] = joystick.axes[axisID[i]];
+            pos[i] = joystick.axes[trackAxisID[i]];
             if(fabs(pos[i]) < 0.2){
                 pos[i] = 0.0;
             }
@@ -122,12 +123,12 @@ public:
         // set the velocity of each tracks
         if(usePseudoContinousTrackMode){
             double k = 1.0;
-            trackL->dq_target() = k * (2.0 * pos[1] - pos[0]);
-            trackR->dq_target() = k * (2.0 * pos[1] + pos[0]);
+            trackL->dq_target() = k * (-2.0 * pos[1] + pos[0]);
+            trackR->dq_target() = k * (-2.0 * pos[1] - pos[0]);
         } else {
             double k = 4.0;
-            trackL->dq_target() = k * (pos[1] - pos[0]);
-            trackR->dq_target() = k * (pos[1] + pos[0]);
+            trackL->dq_target() = k * (-pos[1] + pos[0]);
+            trackR->dq_target() = k * (-pos[1] - pos[0]);
         }
 
         static const double P = 200.0;
@@ -135,7 +136,7 @@ public:
 
         for(int i=0; i < 2; ++i){
             Link* joint = turretJoint[i];
-            double pos = -joystick.axes[axisID[i + 2]];
+            double pos = joystick.axes[turretAxisID[i]];
             if(fabs(pos) < 0.15){
                 pos = 0.0;
             }
@@ -155,7 +156,7 @@ public:
 
         if(light){
             bool changed = false;
-            bool lightButtonState = joystick.buttons[buttonID[0]];
+            bool lightButtonState = joystick.buttons[Joystick::A_BUTTON];
             if(lightButtonState){
                 if(!prevLightButtonState){
                     light->on(!light->on());
@@ -165,10 +166,10 @@ public:
             prevLightButtonState = lightButtonState;
 
             if(spotLight){
-                if(joystick.buttons[buttonID[1]]){
+                if(joystick.buttons[Joystick::X_BUTTON]){
                     spotLight->setBeamWidth(std::max(0.1f, spotLight->beamWidth() - 0.001f));
                     changed = true;
-                } else if(joystick.buttons[buttonID[2]]){
+                } else if(joystick.buttons[Joystick::Y_BUTTON]){
                     spotLight->setBeamWidth(std::min(0.7854f, spotLight->beamWidth() + 0.001f));
                     changed = true;
                 }
