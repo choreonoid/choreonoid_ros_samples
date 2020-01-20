@@ -13,14 +13,13 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   trajectory_msgs
   choreonoid
-  #choreonoid_rosplugin
   )
 
 if(CHOREONOID_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD ${CHOREONOID_CXX_STANDARD})
   set(CMAKE_CXX_EXTENSIONS OFF)
 else()
-  add_compile_options(-std=c++11)
+  add_compile_options(-std=c++14)
 endif()
 
 include_directories(
