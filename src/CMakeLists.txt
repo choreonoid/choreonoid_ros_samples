@@ -1,5 +1,5 @@
-add_cnoid_simple_controller(ROSTankController ROSTankController.cpp)
+choreonoid_add_simple_controller(ROSTankController ROSTankController.cpp)
 target_link_libraries(ROSTankController ${catkin_LIBRARIES})
 
-add_cnoid_simple_controller(JoyTopicSubscriberController JoyTopicSubscriberController.cpp)
+choreonoid_add_simple_controller(JoyTopicSubscriberController JoyTopicSubscriberController.cpp)
 target_link_libraries(JoyTopicSubscriberController ${catkin_LIBRARIES})
