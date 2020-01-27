@@ -7,6 +7,8 @@ if(NOT CMAKE_BUILD_TYPE)
     FORCE)
 endif()
 
+set(CHOREONOID_SKIP_QT_CONFIG true)
+
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
