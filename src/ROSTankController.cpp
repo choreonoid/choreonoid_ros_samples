@@ -28,7 +28,7 @@ class ROSTankController : public SimpleController
     std::mutex joystickMutex;
     
     bool usePseudoContinousTrackMode;
-    Link::ActuationMode turretActuationMode;
+    int turretActuationMode;
     Link* trackL;
     Link* trackR;
     Link* turretJoint[2];
@@ -53,10 +53,10 @@ public:
         Body* body = io->body();
         dt = io->timeStep();
 
-        turretActuationMode = Link::ActuationMode::JOINT_TORQUE;
+        turretActuationMode = Link::JointTorque;
         for(auto opt : io->options()){
             if(opt == "velocity"){
-                turretActuationMode = Link::ActuationMode::JOINT_VELOCITY;
+                turretActuationMode = Link::JointVelocity;
             }
         }
 
@@ -73,15 +73,13 @@ public:
         trackR = body->link("WHEEL_R0");
         if(trackL && trackR){
             usePseudoContinousTrackMode = false;
-            trackL->setActuationMode(Link::JOINT_VELOCITY);
-            trackR->setActuationMode(Link::JOINT_VELOCITY);
         } else {
             usePseudoContinousTrackMode = true;
             trackL = body->link("TRACK_L");
             trackR = body->link("TRACK_R");
-            trackL->setActuationMode(Link::JOINT_SURFACE_VELOCITY);
-            trackR->setActuationMode(Link::JOINT_SURFACE_VELOCITY);
         }
+        trackL->setActuationMode(Link::JointVelocity);
+        trackR->setActuationMode(Link::JointVelocity);
         io->enableOutput(trackL);
         io->enableOutput(trackR);
 
