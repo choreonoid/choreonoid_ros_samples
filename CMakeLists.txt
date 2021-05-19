@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.5.0)
 project(choreonoid_ros_samples)
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -24,14 +24,7 @@ else()
   add_compile_options(-std=c++14)
 endif()
 
-include_directories(
-  ${catkin_INCLUDE_DIRS} 
-  ${CHOREONOID_INCLUDE_DIRS}
-  )
-
-link_directories(
-  ${CHOREONOID_LIBRARY_DIRS}
-  )
+include_directories(${catkin_INCLUDE_DIRS})
 
 add_subdirectory(src)
 add_subdirectory(project)
