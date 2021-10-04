@@ -9,13 +9,16 @@
 #include <sensor_msgs/Joy.h>
 #include <mutex>
 
+using namespace std;
 using namespace cnoid;
 
 class JoyTopicSubscriberController : public SimpleController, public JoystickInterface
 {
+    SimpleControllerIO* io;
     SharedJoystick* sharedJoystick;
     ros::NodeHandle node;
     ros::Subscriber joySubscriber;
+    string topicName;
     std::mutex joyMutex;
     sensor_msgs::Joy tmpJoyState;
     sensor_msgs::Joy joyState;
@@ -24,14 +27,29 @@ public:
     
     virtual bool initialize(SimpleControllerIO* io) override
     {
+        this->io = io;
         sharedJoystick = io->getOrCreateSharedObject<SharedJoystick>("joystick");
         sharedJoystick->setJoystick(this);
+        topicName.clear();
+        bool isTopic = false;
+        for(auto opt : io->options()){
+            if(opt == "topic"){
+                isTopic = true;
+            } else if(isTopic){
+                topicName = opt;
+                break;
+            }
+        }
+        if(topicName.empty()){
+            topicName = "joy";
+        }
         return true;
     }
 
     virtual bool start() override
     {
-        joySubscriber = node.subscribe("joy", 1, &JoyTopicSubscriberController::joyCallback, this);
+        joySubscriber = node.subscribe(topicName, 1, &JoyTopicSubscriberController::joyCallback, this);
+        io->os() << "The joystick state is read from topic \"" << topicName << "\"." << endl;
         return (bool)joySubscriber;
     }
 
